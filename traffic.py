@@ -5,26 +5,7 @@ import pandas as pd
 import pickle
 
 # Set up the app title and image
-# Note Chat GPT was utlized to tweak code found on Stack Overflow for the color gradient text
-color1 = 'red'
-color2 = 'green'
-content = 'Traffic Volume Predictor'
-st.markdown(
-    f'''
-    <p style="
-        text-align: center;
-        background: linear-gradient(to right, {color1}, {color2});
-        -webkit-background-clip: text;
-        color: transparent;
-        font-size: 54px;
-        border-radius: 2%;
-    ">
-        {content}
-    </p>
-    ''', 
-    unsafe_allow_html=True
-)
-
+st.title(f':red[Traffic] :orange[Volume] :green[Predictor]')
 st.write('Utilize our advanced Machine Learning application to predict traffic volume.')
 st.image('traffic_image.gif')
 
