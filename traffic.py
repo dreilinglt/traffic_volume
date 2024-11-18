@@ -106,6 +106,7 @@ elif user_file is not None:
     user_encoded_df = encode_dummy_df.tail(user_file_length)
     # Confidence Interval Slider
     alpha = st.slider('Select Alpha Values for prediction intervals:', min_value=.01, max_value=.5, step=.01)
+    CI_value = (1-alpha)*100
     prediction, intervals = reg_model.predict(user_encoded_df, alpha = alpha)
     lower_limit = intervals[:, 0]
     upper_limit = intervals[:, 1]
@@ -117,8 +118,7 @@ elif user_file is not None:
     user_file_df['Lower Volume Limit'] = user_file_df['Lower Volume Limit'].clip(lower=0)
     user_file_df = user_file_df.round({'Predicted Traffic Volume': 0, 'Lower Volume Limit': 0, 'Upper Volume Limit': 0})
     # Display price predictions
-    st.header('Pedicting Volumes...')
-    st.write('Predicted Volumes:')
+    st.header(f'Prediction Results with {CI_value}% Prediction Interval')
     st.write(user_file_df)
 else:
     st.info(':information_source: Please choose a data input method to proceed')
