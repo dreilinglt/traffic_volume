@@ -8,7 +8,7 @@ import pickle
 # Note Chat GPT was utlized to tweak code found on Stack Overflow for the color gradient text
 color1 = 'red'
 color2 = 'lime'
-content = 'Traffic Volume Predictor'
+content = '**Traffic Volume Predictor**'
 st.markdown(
     f'''
     <p style="
