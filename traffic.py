@@ -5,7 +5,26 @@ import pandas as pd
 import pickle
 
 # Set up the app title and image
-st.title(':red[Traffic] :orange[Volume] :green[Predictor]')
+# Note Chat GPT was utlized to tweak code found on Stack Overflow for the color gradient text
+color1 = 'red'
+color2 = 'lime'
+content = 'Traffic Volume Predictor'
+st.markdown(
+    f'''
+    <p style="
+        text-align: center;
+        background: linear-gradient(to right, {color1}, {color2});
+        -webkit-background-clip: text;
+        color: transparent;
+        font-size: 54px;
+        border-radius: 2%;
+    ">
+        {content}
+    </p>
+    ''', 
+    unsafe_allow_html=True
+)
+
 st.write('Utilize our advanced Machine Learning application to predict traffic volume.')
 st.image('traffic_image.gif')
 
@@ -16,11 +35,7 @@ model_pickle.close()
 
 # Load the default dataset
 default_df = pd.read_csv('Traffic_Volume.csv')
-# Dropping null values
-# default_df.dropna(inplace = True)
-# Convert the date_time column to a datetime object
-# default_df['date_time'] = pd.to_datetime(default_df['date_time'], format='%m/%d/%y %H:%M')
-default_df['date_time'] = pd.to_datetime(default_df['date_time'].str.replace(' ', ''), format='%m/%d/%y%H:%M', errors='coerce')
+default_df['date_time'] = pd.to_datetime(default_df['date_time'])
 
 # Get month, day of the week, and time of day
 default_df['month'] = default_df['date_time'].dt.month_name()
@@ -30,8 +45,10 @@ default_df['hour'] = default_df['date_time'].dt.hour.astype(str)  # hour of the 
 x = default_df.drop(columns = ['traffic_volume', 'date_time'])
 
 # get options for forms
-holiday_options = ['None'] + default_df['holiday'].unique().tolist()
+# Note Chat gpt was used to help with the syntax to ensure holiday_options had the right options
+holiday_options = ['None'] + default_df['holiday'].dropna().unique().tolist() # Make a list with unique values and 'None' instead of Nan values
 weather_main_options = default_df['weather_main'].unique()
+# Ensure months, weekdays and hours are in the right order
 month_options = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 weekday_options = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 hours_options = [str(i) for i in range(24)]
@@ -88,6 +105,7 @@ if submit_button:
     st.write('Predicted Traffic Volume:')
     st.header(f'{round(prediction[0],0): .0f}')
     confidence_interval = (1 - alpha)*100
+    # round answers then show 0 decimal places to ensure it looks correct
     st.write(f'**Confidence Interval** ({confidence_interval}%): [{round(lower_limit[0],0): .0f}, {round(upper_limit[0],0): .0f}]')
 elif user_file is not None:
     # report success
@@ -96,7 +114,7 @@ elif user_file is not None:
     encode_df = default_df.copy()
     # Combine the list of user data as rows to default_df
     user_file_df = pd.read_csv(user_file)
-    # Ensure Hour is input as a string
+    # Ensure Hour is input as a string to match other data
     for i in range(len(user_file_df)):
         user_file_df['hour'][i] = str(user_file_df['hour'][i])
     encode_df_combined = pd.concat([encode_df, user_file_df]) 
